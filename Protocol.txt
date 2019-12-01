@@ -1,0 +1,77 @@
+GC - Get new card from the deck
+No further data needed
+After initial request a second request is issued in POST form
+example request in GET form - /move?a=GC
+example 2nd request in GET form - /confirmmove?a=GC
+
+UC - Use a card in your hand
+UC00 where 00 is your card ID
+example request in GET form - /move?a=UC0000
+
+All cards with card ID's
+01 - Default card
+02 - Pass
+03 - Shuffle
+04 - See the future
+05 - Skip
+06 - Attack
+07 - Favor
+08 - Nope
+09 - Defuse
+10 - Exploding kitten
+
+Card skin ID's
+01
+02
+03
+04
+05
+06
+
+So the laser pointer defuse card would have a complete ID of
+0904
+And the Crab-a-pult attack card would have a complete ID of
+0601
+
+Complete list of card ID's
+
+0101 x 4
+0102 x 4
+0103 x 4
+0104 x 4
+0200 = Special instruction to skip the card playing process
+0301
+0302
+0303
+0304
+0401
+0402
+0403
+0404
+0405
+0501
+0502
+0503
+0504
+0601
+0602
+0603
+0604
+0701
+0702
+0703
+0704
+0801
+0802
+0803
+0804
+0901
+0902
+0903
+0904
+0905
+0906
+1001
+1002
+1003
+1004
