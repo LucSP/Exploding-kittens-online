@@ -1,24 +1,52 @@
 import hashlib
 import random
+import time
 from flask import *
 app = Flask(__name__)
 
 Cards = ["0101x1","0101x2","0101x3","0101x4","0102x1","0102x2","0102x3","0102x4","0131x1","0103x2","0103x3","0103x4","0104x1","0104x2","0104x3","0104x4","0301","0302","0303","0304","0401","0402","0403","0404","0405","0501","0502","0503","0504","0601","0602","0603","0604","0701","0702","0703","0704","0801","0802","0803","0804","0901","0902","0903","0904","0905","0906","1001","1002","1003","1004"]
 DispCards = []
 GCards = []
+CGames = []
 random.shuffle(Cards)
 @app.route("/")
 def index():
-    return "<a>Webpage</a>"
+    return "<a>EK Online server</a>"
+
+
+@app.route("/startgame")
+def startgame():
+    gameid = hashlib.md5(str(time.time()).encode('utf-8')).hexdigest()
+    exec(str(gameid) + " = [\"Game\"]")
+    CGames.append(gameid)
+    print(CGames)
+    return gameid
+
+@app.route("/stopgame")
+def stopgame():
+    gametobestopped = request.args.get("g")
+    print(gametobestopped)
+    try:
+        CGames.remove(str(gametobestopped))
+    except:
+        return "Game: " + gametobestopped + " doesn't exist"
+    return "Game: " + gametobestopped + " has been stopped"
+
+@app.route("/getgame")
+def getgame():
+    gameid = request.args.get("g")
+    if gameid not in CGames:
+        return "Game doesn't exist"
+    return exec(gameid)
+
 
 @app.route("/reguser")
 def reguser():
     name = request.args.get("n")
     token = request.args.get("t")
     game = request.args.get("g")
-    print(name.encode('utf-8'))
-    print(hashlib.md5(name.encode('utf-8')))
-    if token == hashlib.md5(name.encode('utf-8')):
+    if token == hashlib.md5(name.encode('utf-8')).hexdigest():
+
         return "Succesfully authenticated user: " + name + " with token " + token
     else:
         return "Token doesn't match user"
@@ -65,8 +93,6 @@ def move():
 @app.route("/confirmmove")
 def confirmmove():
     a = request.args.get("a")
-
-
 
 
 
