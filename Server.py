@@ -17,15 +17,13 @@ def index():
 @app.route("/startgame")
 def startgame():
     gameid = hashlib.md5(str(time.time()).encode('utf-8')).hexdigest()
-    exec(str(gameid) + " = [\"Game\"]")
+    "global _" + str(gameid) + " = 1"
     CGames.append(gameid)
-    print(CGames)
     return gameid
 
 @app.route("/stopgame")
 def stopgame():
     gametobestopped = request.args.get("g")
-    print(gametobestopped)
     try:
         CGames.remove(str(gametobestopped))
     except:
@@ -37,8 +35,11 @@ def getgame():
     gameid = request.args.get("g")
     if gameid not in CGames:
         return "Game doesn't exist"
-    return exec(gameid)
+    return eval("_" + gameid)
 
+@app.route("/currentgames")
+def currentgames():
+    return str(CGames)
 
 @app.route("/reguser")
 def reguser():
