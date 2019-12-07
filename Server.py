@@ -18,7 +18,7 @@ def index():
 def startgame():
     n = request.args.get("n")
     gameid = hashlib.md5(str(time.time()).encode('utf-8')).hexdigest()
-    CGames[len(CGames)] = {"Gameid": str(gameid), "Players": [], "Name": str(n)}
+    CGames[len(CGames)] = {"Gameid": str(gameid), "Playeramount": 0,"Players": [], "Name": str(n)}
     return gameid
 
 @app.route("/stopgame")
@@ -49,11 +49,14 @@ def reguser():
     token = request.args.get("t")
     game = request.args.get("g")
     if token == hashlib.md5(name.encode('utf-8')).hexdigest():
-
-        return "Succesfully authenticated user: " + name + " with token " + token
+        for key in CGames:
+            if(CGames[key]["Gameid"] == game):
+                CGames[key]["Players"].append({"Name": name, "UserId": token})
+                CGames[key]["Playeramount"] = int(CGames[key]["Playeramount"]) + 1
+                return "Succesfully authenticated user: " + name + " with token " + token + " and joined game " + game
+        return "Key matches user but game doesn't exist"
     else:
         return "Token doesn't match user"
-
 
 @app.route("/move")
 def move():
