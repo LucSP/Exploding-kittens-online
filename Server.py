@@ -4,28 +4,33 @@ import time
 from flask import *
 app = Flask(__name__)
 
-Cards = ["0101x1","0101x2","0101x3","0101x4","0102x1","0102x2","0102x3","0102x4","0131x1","0103x2","0103x3","0103x4","0104x1","0104x2","0104x3","0104x4","0301","0302","0303","0304","0401","0402","0403","0404","0405","0501","0502","0503","0504","0601","0602","0603","0604","0701","0702","0703","0704","0801","0802","0803","0804","0901","0902","0903","0904","0905","0906","1001","1002","1003","1004"]
-DispCards = []
-GCards = []
+#Cards = ["0101x1","0101x2","0101x3","0101x4","0102x1","0102x2","0102x3","0102x4","0131x1","0103x2","0103x3","0103x4","0104x1","0104x2","0104x3","0104x4","0301","0302","0303","0304","0401","0402","0403","0404","0405","0501","0502","0503","0504","0601","0602","0603","0604","0701","0702","0703","0704","0801","0802","0803","0804","0901","0902","0903","0904","0905","0906","1001","1002","1003","1004"]
+#DispCards = []
+#GCards = []
 CGames = {}
-random.shuffle(Cards)
 @app.route("/")
 def index():
-    return "<a>EK Online server</a>"
+    return "<a>EK Online serving server</a>"
 
 
 @app.route("/startgame")
 def startgame():
     n = request.args.get("n")
     gameid = hashlib.md5(str(time.time()).encode('utf-8')).hexdigest()
-    CGames[len(CGames)] = {"Gameid": str(gameid), "Playeramount": 0,"Players": [], "Name": str(n)}
+    CGames[len(CGames)] = {"Gameid": str(gameid), "Playeramount": 0,"Players": [], "Name": str(n), "Cards": ["0101x1","0101x2","0101x3","0101x4","0102x1","0102x2","0102x3","0102x4","0131x1","0103x2","0103x3","0103x4","0104x1","0104x2","0104x3","0104x4","0301","0302","0303","0304","0401","0402","0403","0404","0405","0501","0502","0503","0504","0601","0602","0603","0604","0701","0702","0703","0704","0801","0802","0803","0804","0901","0902","0903","0904","0905","0906","1001","1002","1003","1004"], "GCards": [], "Gcards": []}
+    print(CGames[len(CGames) - 1])
+    random.shuffle(CGames[len(CGames) - 1]["Cards"])
     return gameid
 
 @app.route("/stopgame")
 def stopgame():
     gametobestopped = request.args.get("g")
     try:
-        CGames.remove(str(gametobestopped))
+        for key in CGames:
+            if(CGames[key]["Gameid"] == gametobestopped):
+                Stopgame = key
+                print(Stopgame)
+                CGames.remove(Stopgame)
     except:
         return "Game: " + gametobestopped + " doesn't exist"
     return "Game: " + gametobestopped + " has been stopped"
@@ -61,7 +66,8 @@ def reguser():
 @app.route("/move")
 def move():
     a = request.args.get("a")
-    t = request.args.get("t")
+    g = request.args.get("g") #Game id
+    p = request.args.get("p") #Player id
     if a[:2] == "GC":
         if not Cards:
             if not DispCards:
